@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Tikus</title>
+    <style>
+        .area {
+            background-color: #ddd;
+            width:  44%;
+            height: 140px;
+            margin: 10px;
+            display: inline-block;
+        }
+        .container {
+            position: absolute;
+            top: 30px;left: 35%;right: 35%;
+        }
+        .area[touchable=ya] {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Skor : <span id="skor">0</span></h1>
+    <div class="area" touchable='0'></div>
+    <div class="area" touchable='0'></div>
+    <div class="area" touchable='0'></div>
+    <div class="area" touchable='0'></div>
+    <div class="area" touchable='0'></div>
+    <div class="area" touchable='0'></div>
+</div>
+
+<script>
+let skor = 0
+let areas = document.querySelectorAll('.area')
+function beActive(index) {
+    for(let i = 0; i < areas.length; i++) {
+        areas[i].setAttribute('touchable', '0')
+        if(i === index) {
+            areas[i].setAttribute('touchable', 'ya')
+        }
+    }
+}
+
+function updateScore() {
+    document.querySelector("#skor").innerHTML = skor
+}
+
+function play() {
+    let random = Math.floor(Math.random() * 6)
+    beActive(random)
+}
+
+setInterval(play, 800)
+
+// detect click
+areas.forEach(e => {
+    e.addEventListener('click', function() {
+        let status = this.getAttribute('touchable')
+        if(status == 'ya') {
+            skor += 10
+        }else {
+            skor -= 15
+        }
+        updateScore()
+        play()
+    })
+})
+</script>
+
+</body>
+</html>

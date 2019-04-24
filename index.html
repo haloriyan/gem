@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Game</title>
+	<style>
+		body { text-align: center; }
+		#myCanvas {
+			box-shadow: 1px 1px 5px 1px #ddd;
+			display: inline-block;
+			width: 50%;
+			margin: 50px 0px;
+		}
+	</style>
+</head>
+<body>
+
+<canvas id="myCanvas"></canvas>
+
+<script>
+	let cvs = document.querySelector("#myCanvas")
+	let ctx = cvs.getContext('2d')
+
+	let car = new Image()
+	car.src = "./images/car24.png"
+	let carX = 10
+	let carY = 120
+
+	let score = 0
+
+	let obstacle = new Image()
+	obstacle.src = "./images/barrier.png"
+
+	let obs = []
+	obs[0] = {
+		x: cvs.width,
+		y: 110,
+		nambah: 1
+	}
+
+	window.addEventListener('keydown', (e) => {
+		if(e.key == "ArrowUp") {
+			mencolot()
+		}else if(e.key == "ArrowDown") {
+			mudun()
+		}else if(e.key == "ArrowLeft") {
+			ngiri()
+		}else if(e.key == "ArrowRight") {
+			nganan()
+		}
+	})
+	
+
+	function mencolot() {
+		if(carY >= 10) {
+			carY -= 10
+		}
+	}
+	function mudun() {
+		if(carY + car.height <= cvs.height - 0) {
+			carY += 10
+		}
+	}
+	function nganan() {
+		if(carX + car.width <= cvs.width - 10) {
+			carX += 10
+		}
+	}
+	function ngiri() {
+		if(carX >= 10) {
+			carX -= 10
+		}
+	}
+
+	function draw() {
+		ctx.clearRect(0, 0, cvs.width, cvs.height)
+		ctx.drawImage(car, carX, carY)
+
+		for(let i = 0; i < obs.length; i++) {
+			ctx.drawImage(obstacle, obs[i].x, obs[i].y)
+
+			obs[i].x--
+			/*
+				Collision
+				Kondisi pertama : bemper ngarep nubruk obstacle
+				Kondisi kedua : ben gak mati pas nang tengah-tengah obstacle
+				Kondisi ketiga : ben gak mati pas nang ndukure obstacle
+			*/
+			// if(carX + car.width >= obs[i].x && carY + car.height >= obs[i].y && carY <= obs[i].y + obstacle.height) {
+			// 	location.reload()
+			// }
+			if(carX + car.width >= obs[i].x && carX <= obs[i].x + obstacle.width && carY + car.height >= obs[i].y && carY <= obs[i].y + obstacle.height ) {
+				location.reload()
+			}
+
+			if(carX >= obs[i].x && carX <= obs[i].x + 0.5 && obs[i].nambah == 1) {
+			// if(obs[i].x == 5) {
+				score++
+				obs[i].nambah = 0
+			}
+
+			if(obs[i].x == 245) {
+				obs.push({
+					x: cvs.width,
+					y: Math.floor(Math.random() * 100),
+					nambah: 1
+					// y: 110
+				})
+			}
+
+		}
+		
+		ctx.fillStyle = "#00000060"
+		ctx.fillRect(0, 0, cvs.width, 20)
+		ctx.fillStyle = "#fff"
+		ctx.font = "Arial"
+		ctx.fillText("Score : "+score, 10, 15)
+
+		requestAnimationFrame(draw)
+	}
+
+	draw()
+</script>
+
+</body>
+</html>
